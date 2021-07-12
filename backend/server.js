@@ -9,7 +9,7 @@ const buildPath = path.join(__dirname, '..', 'build');
 app.use(express.static(buildPath));
 
 var movies=[{"movie_name":"movie 1","suggested_by":"kedar","votes":1,"link":"link","review":"gg"}];
-app.get('/movies',(req,res)=>{
+app.get('/v1/movies',(req,res)=>{
     res.send(movies).status(200);
 })
 app.get('/v1/',(req,res)=>{
