@@ -14,7 +14,7 @@ export default class ListOfMovies extends Component{
     }
     componentDidMount(){
         var list;
-        axios.get(backend_url+"/movies").then((res)=>{
+        axios.get(backend_url+"/v1/movies").then((res)=>{
             list=res.data;
             console.log(list);
             this.setState({movies:list});
@@ -62,7 +62,7 @@ export default class ListOfMovies extends Component{
             "link":link_to_add,
             "review":review
         };
-        axios.post(backend_url+"/movie",{movie}).then((res)=>{
+        axios.post(backend_url+"/v1/movie",{movie}).then((res)=>{
             console.log(list);
             this.setState({movies:res.data});
             return;
