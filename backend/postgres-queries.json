@@ -1,0 +1,12 @@
+[
+    {
+        "query_id":"get-all-movies",
+        "query_statement":"SELECT * FROM MOVIES",
+        "query_value":[]
+    },
+    {
+        "query_id":"insert-movie",
+        "query_statement":"INSERT INTO movies VALUES($1,$2,$3,$4,$5)",
+        "query_value":[]
+    }
+]

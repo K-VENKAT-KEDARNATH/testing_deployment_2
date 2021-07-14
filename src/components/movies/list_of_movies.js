@@ -12,14 +12,17 @@ export default class ListOfMovies extends Component{
             movies:[]
         }
     }
-    componentDidMount(){
+    getAllMovies(){
         var list;
         axios.get(backend_url+"/v1/movies").then((res)=>{
-            list=res.data;
-            console.log(list);
+            list=res.data.rows;
+            console.log("backend returned"+JSON.stringify(list));
             this.setState({movies:list});
             this.table_body();
-        })    
+        });
+    }
+    componentDidMount(){
+        this.getAllMovies();
     }
     addMovieToList=()=>{
         var list=this.state.movies;
@@ -64,7 +67,7 @@ export default class ListOfMovies extends Component{
         };
         axios.post(backend_url+"/v1/movie",{movie}).then((res)=>{
             console.log(list);
-            this.setState({movies:res.data});
+            this.getAllMovies();
             return;
         })
         
@@ -75,7 +78,18 @@ export default class ListOfMovies extends Component{
         var movies=this.state.movies;
         var link;
         
-        // console.log(movies);
+        console.log(movies);
+        if(movies.length==0){
+            return(<tr>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    
+                    <td>-</td>
+                    <td>-</td>
+            </tr>);
+        }
         return movies.map((movie,index)=>{
             if(movie.link=='No Link'){
                 link=movie.link;
@@ -128,6 +142,7 @@ export default class ListOfMovies extends Component{
                 </form>
                 <br></br>
                 <button onClick={this.addMovieToList}>Add</button>
+                <br></br><br></br>
             </div>
         )
     }
