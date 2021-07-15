@@ -12,11 +12,16 @@ const POOL = new Pool({
 var movies=[{"movie_name":"movie 1","suggested_by":"kedar","votes":1,"link":"link","review":"gg"}];
 
 router.get('/movies',async (req,res)=>{
-    let client = await POOL.connect();
-    let data=await client.query('SELECT * FROM MOVIES');
-    client.release();
-    let movies= data;
-    res.send(movies).status(200);
+    try{
+        let client = await POOL.connect();
+        let data=await client.query('SELECT * FROM MOVIES');
+        client.release();
+        let movies= data;
+        res.send(movies).status(200);
+    }
+    catch(err){
+        res.send("Error :"+err);
+    }
 })
 router.get('/',(req,res)=>{
     res.send('hi');

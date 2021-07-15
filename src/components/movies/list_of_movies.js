@@ -15,11 +15,16 @@ export default class ListOfMovies extends Component{
     getAllMovies(){
         var list;
         axios.get(backend_url+"/v1/movies").then((res)=>{
-            list=res.data.rows;
+            try{
+            list=JSON.stringify(res.data.rows);
             console.log("backend returned"+JSON.stringify(list));
             this.setState({movies:list});
             document.getElementById("text_here").innerHTML='list is '+list+JSON.stringify(list);
             this.table_body();
+            }
+            catch(err){
+                document.getElementById("text_here").innerHTML='got error and err is '+err+' backend sent '+res.data;
+            }
         });
     }
     componentDidMount(){
