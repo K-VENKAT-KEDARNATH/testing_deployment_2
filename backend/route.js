@@ -13,7 +13,7 @@ var movies=[{"movie_name":"movie 1","suggested_by":"kedar","votes":1,"link":"lin
 
 router.get('/movies',async (req,res)=>{
     let client = await POOL.connect();
-    let data=await client.query('SELECT * FROM MOVIES',[]);
+    let data=await client.query('SELECT * FROM MOVIES');
     client.release();
     let movies= data;
     res.send(movies).status(200);

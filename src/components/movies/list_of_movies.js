@@ -18,6 +18,7 @@ export default class ListOfMovies extends Component{
             list=res.data.rows;
             console.log("backend returned"+JSON.stringify(list));
             this.setState({movies:list});
+            document.getElementById("text_here").innerHTML='list is '+list+JSON.stringify(list);
             this.table_body();
         });
     }
@@ -132,6 +133,7 @@ export default class ListOfMovies extends Component{
                         {this.table_body()}
                     </tbody>
                 </table>
+                <div id="text_here"></div>
                 <br></br><br></br>
                 <h3>Add movies here</h3>
                 <form>
