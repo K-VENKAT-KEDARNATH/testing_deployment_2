@@ -3,12 +3,10 @@ const router = express.Router();
 const { Pool } = require('pg');
 // const POSTGRES_QUERIES_JSON = require('./postgres-queries.json');
 const POOL = new Pool({
-    user:process.env.DATABASE_USER,
-    host:process.env.DATABASE_HOST,
-    database:process.env.DATABASE,
-    password:process.env.DATABASE_PASSWORD,
-    port:process.env.DATABASE_PORT,
-    ssl:{rejectUnauthorized:false}
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:037a33536f396d9666d714f9355ad0d5e799a4d62de75eeee366b80a0fec93fb@localhost:5432/d7a76r87ce9iqr',
+    ssl:{
+        rejectUnauthorized:false
+    }
 });
 
 var movies=[{"movie_name":"movie 1","suggested_by":"kedar","votes":1,"link":"link","review":"gg"}];
