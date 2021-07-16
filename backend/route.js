@@ -4,6 +4,11 @@ const { Pool } = require('pg');
 // const POSTGRES_QUERIES_JSON = require('./postgres-queries.json');
 const POOL = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:037a33536f396d9666d714f9355ad0d5e799a4d62de75eeee366b80a0fec93fb@localhost:5432/d7a76r87ce9iqr',
+    // user: process.env.DATABASE_USER,
+    // host: process.env.DATABASE_HOST,
+    // database: process.env.DATABASE,
+    // password: process.env.DATABASE_PASSWORD,
+    // port: process.env.DATABASE_PORT,
     ssl:{
         rejectUnauthorized:false
     }
@@ -43,6 +48,24 @@ router.post('/movie',async (req,res)=>{
     let movies=data;
     console.log("after inserting"+movies.rows);
     res.send(movies.rows).status(200);
+})
+router.post('/upvote',async (req,res)=>{
+    let client = await POOL.connect();
+    let votesBack=await client.query('SELECT votes FROM MOVIES WHERE movie_name='+req.body);
+    let votes=votesBack.rows["votes"];
+    let datatemp=await client.query('UPDATE MOVIES SET votes=',votes+1,' where movie_name='+req.body);
+    let data=await client.query('SELECT * FROM MOVIES');
+    client.release();
+    res.send(data).status(200);
+})
+router.post('/downvote',async (req,res)=>{
+    let client = await POOL.connect();
+    let votesBack=await client.query('SELECT votes FROM MOVIES WHERE movie_name='+req.body);
+    let votes=votesBack.rows["votes"];
+    let datatemp=await client.query('UPDATE MOVIES SET votes=',votes-1,' where movie_name='+req.body);
+    let data=await client.query('SELECT * FROM MOVIES');
+    client.release();
+    res.send(data).status(200);
 })
 
 module.exports=router;
