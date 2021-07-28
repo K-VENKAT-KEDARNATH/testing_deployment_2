@@ -12,14 +12,24 @@ export default class ListOfMovies extends Component{
             movies:[]
         }
     }
-    componentDidMount(){
+    getAllMovies(){
         var list;
         axios.get(backend_url+"/v1/movies").then((res)=>{
-            list=res.data;
-            console.log(list);
+            try{
+            list=res.data.rows;
+            console.log("backend returned"+JSON.stringify(list));
             this.setState({movies:list});
+            // document.getElementById("text_here").innerHTML='list is '+list+JSON.stringify(list);
             this.table_body();
-        })    
+            }
+            catch(err){
+                // document.getElementById("text_here").innerHTML='got error and err is '+err+' backend sent '+res.data;
+                console.log(err);
+            }
+        });
+    }
+    componentDidMount(){
+        this.getAllMovies();
     }
     addMovieToList=()=>{
         var list=this.state.movies;
@@ -64,19 +74,35 @@ export default class ListOfMovies extends Component{
         };
         axios.post(backend_url+"/v1/movie",{movie}).then((res)=>{
             console.log(list);
-            this.setState({movies:res.data});
+            this.getAllMovies();
             return;
         })
         
     }
-    
+    // upvote(movie_name){
+    //     return(
+            
+    //     )
+    // }
     table_body(){
         // var trs=[];
         var movies=this.state.movies;
         var link;
         
-        // console.log(movies);
-        return movies.map((movie,index)=>{
+        console.log('movies is '+movies);
+        if(movies.length==0){
+            return(<tr>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    
+                    <td>-</td>
+                    <td>-</td>
+            </tr>);
+        }
+        console.log("type of movies is "+typeof(movies));
+        return movies.map(function(movie){
             if(movie.link=='No Link'){
                 link=movie.link;
             }
@@ -84,18 +110,31 @@ export default class ListOfMovies extends Component{
                 link=<a href={movie.link}>link</a>
             }
             return(
-                <tr>
-                    <td>{movie.movie_name}</td>
-                    <td>{movie.suggested_by}</td>
-                    <td>{movie.votes}</td>
-                    <td><button>Upvote</button><button>Downvote</button></td>
-                    
-                    <td>{link}</td>
-                    <td>{movie.review}</td>
-                </tr>
+                <tr id={movie.movie_name}>
+                <td>{movie.movie_name}</td>
+                <td>{movie.suggested_by}</td>
+                <td>{movie.votes}</td>
+                <td>
+                <button onClick={()=>{
+                    axios.post(backend_url+'/v1/upvote',movie.movie_name).then(res=>{
+                        this.setState({movies:res.data.rows});
+                    })
+                }}>
+                Upvote</button>
+                <button onClick={()=>{
+                    axios.post(backend_url+'/v1/downvote',movie.movie_name).then(res=>{
+                        this.setState({movies:res.data.rows});
+                    })
+                }}>Downvote</button>
+            </td>
+                <td>{link}</td>
+                <td>{movie.review}</td>
+            </tr>
             )
         })
+        // return l;
     }
+    
     render(){
         // var link=<a href="www.google.com">link</a>;
         // var movies=[{"movie_name":"movie 1","suggested_by":"kedar","votes":1,"link":<a href="www.google.com">link</a>,"review":"gg"}]
@@ -118,6 +157,7 @@ export default class ListOfMovies extends Component{
                         {this.table_body()}
                     </tbody>
                 </table>
+                <div id="text_here"></div>
                 <br></br><br></br>
                 <h3>Add movies here</h3>
                 <form>
@@ -128,6 +168,7 @@ export default class ListOfMovies extends Component{
                 </form>
                 <br></br>
                 <button onClick={this.addMovieToList}>Add</button>
+                <br></br><br></br>
             </div>
         )
     }
